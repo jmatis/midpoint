@@ -1,6 +1,16 @@
 #!/bin/bash
-
+exitcode=1
 myself=$0
+function shutdown()
+{
+  export CATALINA_HOME=/opt/tomcat/
+  export JAVA_HOME=/opt/java/
+  cd /opt/tomcat/bin/
+  ./shutdown.sh
+  exitcode=0
+}
+
+trap shutdown HUP INT QUIT ABRT KILL ALRM TERM TSTP
 
 export CATALINA_HOME=/opt/tomcat/
 export JAVA_HOME=/opt/java/
@@ -8,7 +18,6 @@ export JAVA_OPTS="$JAVA_OPTS -Dmidpoint.home=/opt/midpoint -XX:MaxPermSize=256m"
 
 cd /opt/tomcat/bin/
 ./startup.sh
-tail -f /opt/tomcat/logs/catalina.out &
 
 sleep 60
 
@@ -19,5 +28,4 @@ while [ ${processcount} -eq 1 ]; do
         processcount=$(ps -ef | grep -v grep | grep -v ${myself} | grep "org.apache.catalina.startup.Bootstrap start" | wc -l | awk '{print $1}')
 done
 
-echo "tomcat died" >&2
-exit 1
+exit ${exitcode}

@@ -11,9 +11,11 @@ RUN mv midpoint-2.2.1/war/midpoint.war /opt/tomcat/webapps/
 RUN rm -f midpoint-2.2.1-dist.tar
 
 # add start script
-RUN wget -nv https://raw.githubusercontent.com/jmatis/midpoint/master/start-watch-tomcat.sh -O start-watch-tomcat.sh
-RUN chown root:root /opt/start-watch-tomcat.sh
-RUN chmod 700 /opt/start-watch-tomcat.sh
+RUN wget -nv https://raw.githubusercontent.com/jmatis/midpoint/master/tomcat-supervisor.sh -O tomcat-supervisor.sh
+RUN chown root:root /opt/tomcat-supervisor.sh
+RUN chmod 700 /opt/tomcat-supervisor.sh
 
-# start tomcat with midpoint
-CMD /opt/start-watch-tomcat.sh
+# export ssh adn tomcat's port
+EXPOSE 22 8080
+
+CMD ["/usr/bin/supervisord"]
