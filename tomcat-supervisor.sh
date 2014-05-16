@@ -1,4 +1,5 @@
 #!/bin/bash
+
 exitcode=1
 myself=$0
 function shutdown()
